@@ -1,70 +1,142 @@
 /* static/css/style.css */
+/* Estilos base */
 .container {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
 }
 
+/* Interfaz de chat */
 .chat-interface {
     display: flex;
     flex-direction: column;
     height: 80vh;
     border: 1px solid #ddd;
     border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .chat-header {
     padding: 15px;
-    background: #f8f9fa;
+    background: #2563eb; /* blue-600 */
     border-bottom: 1px solid #ddd;
+    color: white;
 }
 
 .chat-messages {
     flex-grow: 1;
     overflow-y: auto;
     padding: 20px;
+    scroll-behavior: smooth;
 }
 
 .chat-input {
     padding: 15px;
     border-top: 1px solid #ddd;
+    background: white;
 }
 
 .chat-input form {
     display: flex;
     gap: 10px;
+    align-items: center;
 }
 
 .chat-input input {
     flex-grow: 1;
-    padding: 8px;
+    padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.chat-input input:focus {
+    outline: none;
+    border-color: #2563eb;
 }
 
 .chat-input button {
     padding: 8px 20px;
-    background: #007bff;
+    background: #2563eb;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.2s;
 }
 
+.chat-input button:hover {
+    background: #1d4ed8;
+}
+
+.chat-input button:disabled {
+    background: #93c5fd;
+    cursor: not-allowed;
+}
+
+/* Mensajes */
 .message {
     margin: 10px 0;
     padding: 10px;
-    border-radius: 4px;
+    border-radius: 8px;
     max-width: 70%;
+    animation: fadeIn 0.3s ease-in;
 }
 
 .user-message {
-    background: #007bff;
+    background: #2563eb;
     color: white;
     margin-left: auto;
 }
 
 .bot-message {
-    background: #f8f9fa;
+    background: #f3f4f6;
     margin-right: auto;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Indicador de escritura */
+.typing-indicator {
+    padding: 8px;
+    background: #f3f4f6;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    background: #2563eb;
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: typing 1s infinite ease-in-out;
+}
+
+@keyframes typing {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .chat-interface {
+        height: 90vh;
+    }
+    
+    .message {
+        max-width: 85%;
+    }
 }

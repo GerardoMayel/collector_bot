@@ -1,8 +1,12 @@
 # app/routes/main.py
 from flask import Blueprint, render_template, request, jsonify
 from http import HTTPStatus
+from ..services.openai_service import OpenAIService
+from ..services.gemini_service import GeminiService
+from flask import current_app
+import asyncio
 
-main_bp = Blueprint('main', __name__)  # Corregido: __name__ en lugar de **name**
+main_bp = Blueprint('main', __name__)
 
 @main_bp.route('/')
 def index():
@@ -16,10 +20,26 @@ def chat():
             return jsonify({
                 'error': 'No message provided'
             }), HTTPStatus.BAD_REQUEST
+
+        # Inicializar el servicio de Gemini
+        gemini_service = GeminiService(current_app.config.get('GEMINI_API_KEY'))
         
-        # Aquí irá la lógica de procesamiento
+        try:
+            # Usar asyncio para manejar la llamada asíncrona
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            response = loop.run_until_complete(gemini_service.get_completion(data['message']))
+            loop.close()
+        except Exception as e:
+            # Fallback a OpenAI si Gemini falla
+            openai_service = OpenAIService(current_app.config.get('OPENAI_API_KEY'))
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            response = loop.run_until_complete(openai_service.get_completion(data['message']))
+            loop.close()
+
         return jsonify({
-            'response': 'Message received',
+            'response': response,
             'type': 'text'
         }), HTTPStatus.OK
     except Exception as e:
