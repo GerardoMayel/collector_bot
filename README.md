@@ -153,7 +153,7 @@ flowchart TB
 ├── README.md
 ├── app/
 │   ├── __init__.py
-│   ├── congif.py
+│   ├── config.py
 │   ├── routes/
 │   │   ├── __init__.py
 │   │   └── main.py

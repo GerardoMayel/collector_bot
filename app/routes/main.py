@@ -2,7 +2,7 @@
 from flask import Blueprint, render_template, request, jsonify
 from http import HTTPStatus
 
-main_bp = Blueprint('main', __name__)
+main_bp = Blueprint('main', __name__)  # Corregido: __name__ en lugar de **name**
 
 @main_bp.route('/')
 def index():
@@ -16,13 +16,12 @@ def chat():
             return jsonify({
                 'error': 'No message provided'
             }), HTTPStatus.BAD_REQUEST
-            
+        
         # Aquí irá la lógica de procesamiento
         return jsonify({
             'response': 'Message received',
             'type': 'text'
         }), HTTPStatus.OK
-            
     except Exception as e:
         return jsonify({
             'error': str(e)
