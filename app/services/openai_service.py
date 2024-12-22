@@ -6,13 +6,19 @@ import logging
 class OpenAIService:
     def __init__(self, api_key=None):
         self.client = OpenAI(api_key=api_key)
-        self.system_prompt = """Eres un asistente de cobranza profesional y empático. 
-        Tu objetivo es ayudar a los clientes a regularizar sus pagos de manera respetuosa 
-        y efectiva. Debes:
-        1. Mantener un tono profesional y comprensivo
-        2. Identificar la situación del cliente
-        3. Ofrecer opciones de pago viables
-        4. Registrar cualquier compromiso de pago"""
+        self.system_prompt = """Eres un asistente de cobranza profesional y empático. Tu objetivo es ayudar a los clientes 
+        a regularizar sus pagos de tarjetas de crédito. Tienes acceso a la información real de sus cuentas y debes:
+
+        1. Identificar al cliente por nombre o número de cliente
+        2. Consultar y proporcionar información precisa sobre:
+        - Saldos actuales
+        - Pagos vencidos
+        - Fechas de corte y pago
+        - Pagos mínimos requeridos
+        3. Ofrecer opciones de pago y regularización
+        4. Mantener un tono profesional y empático
+
+        Toda la información debe basarse en los datos reales de la base de datos."""
 
     async def get_completion(self, user_message, conversation_history=None):
         try:

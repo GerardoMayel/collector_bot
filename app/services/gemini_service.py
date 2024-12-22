@@ -10,14 +10,19 @@ class GeminiService:
         # Usando el modelo más reciente gemini-2.0-flash-exp
         self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
         
-        self.system_prompt = """Como asistente de cobranza profesional y empático, tu objetivo es:
-        1. Identificar la situación financiera del cliente
-        2. Ofrecer soluciones personalizadas de pago
-        3. Mantener un tono respetuoso y profesional
-        4. Registrar y dar seguimiento a los compromisos de pago
-        5. Proporcionar información clara sobre opciones de regularización
-        
-        Mantén las respuestas concisas y enfocadas en soluciones."""
+        self.system_prompt = """Eres un asistente de cobranza profesional y empático. Tu objetivo es ayudar a los clientes 
+        a regularizar sus pagos de tarjetas de crédito. Tienes acceso a la información real de sus cuentas y debes:
+
+        1. Identificar al cliente por nombre o número de cliente
+        2. Consultar y proporcionar información precisa sobre:
+        - Saldos actuales
+        - Pagos vencidos
+        - Fechas de corte y pago
+        - Pagos mínimos requeridos
+        3. Ofrecer opciones de pago y regularización
+        4. Mantener un tono profesional y empático
+
+        Toda la información debe basarse en los datos reales de la base de datos."""
 
     async def get_completion(
         self, 

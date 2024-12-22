@@ -144,7 +144,7 @@ flowchart TB
 
 ## 📂 Estructura del Proyecto
 
-###tree -I '**pycache**|_.pyc|_.pyo|\*.log' -L 3 -F > estructura_del_proyecto.txt
+###tree -I 'venv|**pycache**|_.pyc|_.pyo|\*.log' -L 3 -F > estructura_del_proyecto.txt
 
 ```
 ./
@@ -154,11 +154,18 @@ flowchart TB
 ├── app/
 │   ├── __init__.py
 │   ├── config.py
+│   ├── database/
+│   │   ├── __init__.py
+│   │   └── init_db.py
+│   ├── models/
+│   │   ├── __init__.py
+│   │   └── cliente_cuenta.py
 │   ├── routes/
 │   │   ├── __init__.py
 │   │   └── main.py
 │   ├── services/
 │   │   ├── __init__.py
+│   │   ├── database_service.py
 │   │   ├── gemini_service.py
 │   │   └── openai_service.py
 │   ├── static/
@@ -168,14 +175,16 @@ flowchart TB
 │       ├── base.html
 │       └── index.html
 ├── data/
+│   └── cobranza.db
 ├── docker/
 ├── estructura_del_proyecto.txt
+├── instance/
 ├── requirements.txt
 ├── runtime.txt
 ├── tests/
 └── wsgi.py
 
-11 directories, 16 files
+14 directories, 22 files
 ```
 
 ## 🚀 Instalación
