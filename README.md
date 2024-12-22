@@ -33,13 +33,13 @@ flowchart TB
             DB3[(Interacciones)]
             DB4[(Documentos)]
         end
-        
+
         subgraph MLModels["Modelos ML"]
             M1[Pricing Model]
             M2[Risk Model]
             M3[Payment Probability]
         end
-        
+
         subgraph Knowledge["Base Conocimiento"]
             K1[Call Scripts]
             K2[Histórico Exitoso]
@@ -50,16 +50,16 @@ flowchart TB
         O1[Data Orchestrator]
         O2[Model Orchestrator]
         O3[Response Orchestrator]
-        
+
         DB1 --> O1
         DB2 --> O1
         DB3 --> O1
         DB4 --> O1
-        
+
         M1 --> O2
         M2 --> O2
         M3 --> O2
-        
+
         K1 --> O3
         K2 --> O3
         K3 --> O3
@@ -102,34 +102,41 @@ flowchart TB
 ## 📚 Componentes Principales
 
 ### 1. Capa de Entrada
+
 - Procesamiento de Audio (Speech-to-Text)
 - Procesamiento de Texto
 - Procesamiento de Documentos
 - Input Handler unificado
 
 ### 2. Capa de Datos
+
 **Base Transaccional**:
+
 - Cliente-Cuenta
 - Promesas de Pago
 - Interacciones
 - Documentos
 
 **Modelos ML**:
+
 - Pricing Model
 - Risk Model
 - Payment Probability Model
 
 **Base de Conocimiento**:
+
 - Call Scripts
 - Histórico de Interacciones Exitosas
 - Planes de Pago
 
 ### 3. Capa de Orquestación
+
 - Data Orchestrator
 - Model Orchestrator
 - Response Orchestrator
 
 ### 4. Capa de Procesamiento
+
 - Intent Classifier
 - Context Generator
 - Dialogue Manager
@@ -137,33 +144,38 @@ flowchart TB
 
 ## 📂 Estructura del Proyecto
 
+###tree -I '**pycache**|_.pyc|_.pyo|\*.log' -L 3 -F > estructura_del_proyecto.txt
+
 ```
-voicebot-cobranza/
+./
+├── LICENSE
+├── Procfile
+├── README.md
 ├── app/
-│   ├── api/
-│   │   ├── routes.py
-│   │   └── endpoints/
-│   ├── core/
-│   │   ├── config.py
-│   │   └── security.py
-│   ├── models/
-│   │   ├── database.py
-│   │   └── schemas.py
-│   ├── services/
-│   │   ├── whatsapp.py
-│   │   ├── speech.py
-│   │   ├── llm.py
-│   │   └── dialogue.py
-│   └── orchestration/
-│       ├── data_orchestrator.py
-│       ├── model_orchestrator.py
-│       └── response_orchestrator.py
+│   ├── __init__.py
+│   ├── congif.py
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   └── main.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── gemini_service.py
+│   │   └── openai_service.py
+│   ├── static/
+│   │   ├── css/
+│   │   └── js/
+│   └── templates/
+│       ├── base.html
+│       └── index.html
 ├── data/
-│   ├── call_model/
-│   └── payment_plans/
-├── tests/
 ├── docker/
-└── web/
+├── estructura_del_proyecto.txt
+├── requirements.txt
+├── runtime.txt
+├── tests/
+└── wsgi.py
+
+11 directories, 16 files
 ```
 
 ## 🚀 Instalación
@@ -196,7 +208,7 @@ dialogue_manager = DialogueManager()
 async def process_interaction(input_data):
     # Obtener predicciones de modelos
     ml_insights = await model_orchestrator.get_ml_insights(input_data)
-    
+
     # Generar respuesta
     response = await dialogue_manager.process_input(input_data, ml_insights)
     return response

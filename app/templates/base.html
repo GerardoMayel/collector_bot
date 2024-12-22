@@ -1,0 +1,37 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Voice Bot Cobranza{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
+
+<!-- templates/index.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="chat-interface">
+    <div class="chat-header">
+        <h1>Voice Bot Cobranza</h1>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages"></div>
+    
+    <div class="chat-input">
+        <form id="chatForm" onsubmit="return handleSubmit(event)">
+            <input type="text" id="userInput" placeholder="Escribe tu mensaje...">
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
