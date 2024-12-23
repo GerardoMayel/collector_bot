@@ -170,7 +170,9 @@ flowchart TB
 │   │   └── openai_service.py
 │   ├── static/
 │   │   ├── css/
+│   │   │   └── style.css
 │   │   └── js/
+│   │       └── chat.js
 │   └── templates/
 │       ├── base.html
 │       └── index.html
@@ -184,7 +186,7 @@ flowchart TB
 ├── tests/
 └── wsgi.py
 
-14 directories, 22 files
+14 directories, 24 files
 ```
 
 ## 🚀 Instalación
