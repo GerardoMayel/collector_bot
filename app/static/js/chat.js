@@ -167,19 +167,68 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Limpiar chat
-    document.getElementById('clearChat')?.addEventListener('click', function() {
-        const chatMessages = document.getElementById('chatMessages');
-        chatMessages.innerHTML = `
-            <div class="flex items-start space-x-2 bot-message">
-                <div class="flex-shrink-0">
-                    <i class="fas fa-robot text-blue-600 text-xl"></i>
+    document.getElementById('clearChat').addEventListener('click', async function() {
+        try {
+            const response = await fetch('/api/clear-chat', { 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al limpiar el chat');
+            }
+
+            // Limpiar el área de mensajes
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = `
+                <div class="flex items-start space-x-2 bot-message">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-robot text-blue-600 text-xl"></i>
+                    </div>
+                    <div class="flex-1 bg-gray-100 rounded-lg p-3">
+                        <p class="text-gray-800">
+                            ¡Hola! Soy tu asistente de cobranza virtual. Puedes escribir tu mensaje o usar el micrófono para hablar. 
+                            Para comenzar, por favor proporciona tu número de cliente o número de tarjeta.
+                        </p>
+                    </div>
                 </div>
-                <div class="flex-1 bg-gray-100 rounded-lg p-3">
-                    <p class="text-gray-800">
-                        ¡Hola! Soy tu asistente de cobranza virtual. Puedes escribir tu mensaje o usar el micrófono para hablar.
-                    </p>
+            `;
+
+            // Limpiar el input
+            const userInput = document.getElementById('userInput');
+            if (userInput) {
+                userInput.value = '';
+            }
+
+            // Scroll al inicio
+            chatMessages.scrollTop = 0;
+
+            // Animación de feedback
+            const clearButton = document.getElementById('clearChat');
+            clearButton.classList.add('animate-pulse');
+            setTimeout(() => {
+                clearButton.classList.remove('animate-pulse');
+            }, 1000);
+
+        } catch (error) {
+            console.error('Error al limpiar el chat:', error);
+            // Mostrar mensaje de error al usuario
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.insertAdjacentHTML('beforeend', `
+                <div class="flex items-start space-x-2 bot-message">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-exclamation-circle text-red-500 text-xl"></i>
+                    </div>
+                    <div class="flex-1 bg-red-50 rounded-lg p-3">
+                        <p class="text-red-600">
+                            Hubo un error al limpiar el chat. Por favor, intenta de nuevo.
+                        </p>
+                    </div>
                 </div>
-            </div>
-        `;
+            `);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
     });
 });

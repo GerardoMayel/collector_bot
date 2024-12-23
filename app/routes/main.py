@@ -1,12 +1,19 @@
 # app/routes/main.py
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, session
 from http import HTTPStatus
 from ..services.gemini_service import GeminiService
 from flask import current_app
 import asyncio
 import logging
+import uuid
 
 main_bp = Blueprint('main', __name__)
+
+@main_bp.before_request
+def before_request():
+    # Asignar un ID de sesión si no existe
+    if 'session_id' not in session:
+        session['session_id'] = str(uuid.uuid4())
 
 @main_bp.route('/')
 def index():
@@ -23,11 +30,11 @@ async def handle_audio():
         audio_file = request.files['audio']
         audio_data = audio_file.read()
         
-        # Inicializar servicio de Gemini
         gemini_service = GeminiService(current_app.config.get('GEMINI_API_KEY'))
-        
-        # Procesar audio y obtener respuesta
-        success, response = await gemini_service.process_audio_input(audio_data)
+        success, response = await gemini_service.process_audio_input(
+            audio_data, 
+            session['session_id']
+        )
         
         if not success:
             return jsonify({
@@ -55,7 +62,10 @@ async def chat():
             }), HTTPStatus.BAD_REQUEST
 
         gemini_service = GeminiService(current_app.config.get('GEMINI_API_KEY'))
-        response = await gemini_service.get_completion(data['message'])
+        response = await gemini_service.get_completion(
+            data['message'],
+            session['session_id']
+        )
 
         return jsonify({
             'response': response,
@@ -67,9 +77,11 @@ async def chat():
             'error': str(e)
         }), HTTPStatus.INTERNAL_SERVER_ERROR
 
-@main_bp.route('/api/health')
-def health_check():
-    return jsonify({
-        'status': 'healthy',
-        'version': '1.0.0'
-    }), HTTPStatus.OK
+@main_bp.route('/api/clear-chat', methods=['POST'])
+def clear_chat():
+    try:
+        # Generar nuevo ID de sesión
+        session['session_id'] = str(uuid.uuid4())
+        return jsonify({'status': 'success'}), HTTPStatus.OK
+    except Exception as e:
+        return jsonify({'error': str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR
