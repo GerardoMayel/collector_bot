@@ -153,26 +153,31 @@ flowchart TB
 ├── README.md
 ├── app/
 │   ├── __init__.py
+│   ├── __pycache__/
+│   │   ├── __init__.cpython-39.pyc
+│   │   └── config.cpython-39.pyc
 │   ├── config.py
 │   ├── database/
 │   │   ├── __init__.py
+│   │   ├── __pycache__/
 │   │   └── init_db.py
 │   ├── models/
 │   │   ├── __init__.py
+│   │   ├── __pycache__/
 │   │   └── cliente_cuenta.py
 │   ├── routes/
 │   │   ├── __init__.py
+│   │   ├── __pycache__/
 │   │   └── main.py
 │   ├── services/
 │   │   ├── __init__.py
+│   │   ├── __pycache__/
 │   │   ├── database_service.py
 │   │   ├── gemini_service.py
 │   │   └── openai_service.py
 │   ├── static/
 │   │   ├── css/
-│   │   │   └── style.css
 │   │   └── js/
-│   │       └── chat.js
 │   └── templates/
 │       ├── base.html
 │       └── index.html
@@ -186,7 +191,7 @@ flowchart TB
 ├── tests/
 └── wsgi.py
 
-14 directories, 24 files
+19 directories, 24 files
 ```
 
 ## 🚀 Instalación
