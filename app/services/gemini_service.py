@@ -10,7 +10,7 @@ from .database_service import DatabaseService
 class GeminiService:
     def __init__(self, api_key: Optional[str] = None):
         genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel('gemini-2.0-flash-exp')  # Mantenemos el mismo modelo
+        self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
         self.db_service = DatabaseService()
         self.conversation_history = {}
         self.system_prompt = """Eres un asistente de cobranza profesional y empático que tiene acceso a la base de datos del banco. 
@@ -25,7 +25,7 @@ class GeminiService:
         - Pagos mínimos requeridos
         3. Ofrecer opciones de pago y regularización
         4. Mantener un tono profesional y empático
-        
+
         Si es audio:
         5. Primero, SIEMPRE indica claramente lo que escuchaste en el audio
         6. Si no puedes entender el audio o hay problemas, indícalo directamente
@@ -34,26 +34,63 @@ class GeminiService:
         9. NO uses placeholders como [Nombre] o [Monto]
         10. Muy relevante: Solo usa información real que puedas obtener del audio o la base de datos
         
-        Por ejemplo:
-        - cuando es entrada de audio: Si no entiendes el audio: "No pude entender claramente el audio. ¿Podrías repetir tu mensaje?"
-        - cuando es entrada de audio: Si lo entiendes: "Entendí que preguntaste sobre [transcripción exacta completa]. En respuesta: [respuesta concisa]"
-        - cuando es entrada de texto: En respuesta: [respuesta concisa] no es necesario repetir la transcripción de audio que entendiste
+        Información del cliente:
+        - Datos básicos: {client_data}
+        - Resumen del cliente: {client_summary}
+        - Próximos pagos: {next_payments}
+        - Estado de mora: {mora_status}
         
-        Información del cliente actual:
-        {client_data}
+        Historial de conversación, este historial se genera de conversaciones de propmts pasados:
+        {conversation_history}
         """
 
+    def _get_client_context(self, numero_cliente: Optional[str] = None, numero_tarjeta: Optional[str] = None) -> Dict:
+        """Obtiene el contexto completo del cliente"""
+        client_data = self.db_service.get_client_info(numero_cliente, numero_tarjeta)
+        
+        context_data = {
+            'client_data': json.dumps(client_data, indent=2, ensure_ascii=False) if client_data else "No hay datos básicos del cliente",
+            'client_summary': "No aplica" if not numero_cliente else json.dumps(
+                self.db_service.get_client_summary(numero_cliente), 
+                indent=2, 
+                ensure_ascii=False
+            ),
+            'next_payments': "No aplica" if not numero_cliente else json.dumps(
+                self.db_service.get_next_payments(numero_cliente), 
+                indent=2, 
+                ensure_ascii=False
+            ),
+            'mora_status': json.dumps(
+                self.db_service.get_mora_status(numero_cliente, numero_tarjeta),
+                indent=2,
+                ensure_ascii=False
+            )
+        }
+        
+        return context_data
+
+    def _get_conversation_history(self, session_id: str) -> str:
+        """Obtiene el historial de conversación formateado"""
+        if session_id not in self.conversation_history:
+            return "No hay historial previo"
+            
+        history = []
+        for msg in self.conversation_history[session_id]:
+            role = "Usuario" if msg["role"] == "user" else "Asistente"
+            history.append(f"{role}: {msg['content']}")
+            
+        return "\n".join(history)
+
     async def process_audio_input(self, audio_data: bytes, session_id: str) -> Tuple[bool, str]:
-        """
-        Procesa entrada de audio usando Gemini y retorna (éxito, respuesta)
-        """
+        """Procesa entrada de audio usando Gemini"""
         try:
             # Obtener el contexto actual de la conversación
-            context = self._get_conversation_history(session_id)
+            context_data = self._get_client_context(None, None)  # Inicialmente sin cliente identificado
+            context_data['conversation_history'] = self._get_conversation_history(session_id)
             
             # Crear el contenido multimodal con el contexto
             prompt_parts = [
-                {"text": self.system_prompt.format(client_data=context)},
+                {"text": self.system_prompt.format(**context_data)},
                 {
                     "inline_data": {
                         "mime_type": "audio/wav",
@@ -93,20 +130,6 @@ class GeminiService:
             logging.error(f"Error en procesamiento de audio: {str(e)}")
             return False, f"Error al procesar el audio: {str(e)}"
 
-    def _get_conversation_history(self, session_id: str) -> str:
-        """
-        Obtiene el historial de conversación formateado
-        """
-        if session_id not in self.conversation_history:
-            return "No hay historial previo"
-            
-        history = []
-        for msg in self.conversation_history[session_id]:
-            role = "Usuario" if msg["role"] == "user" else "Asistente"
-            history.append(f"{role}: {msg['content']}")
-            
-        return "\n".join(history)
-
     async def get_completion(
         self,
         user_message: str,
@@ -115,17 +138,15 @@ class GeminiService:
         try:
             # Extraer información del cliente
             numero_cliente, numero_tarjeta = self.db_service.extract_client_info(user_message)
-            client_data = self.db_service.get_client_info(numero_cliente, numero_tarjeta)
             
-            # Preparar el contexto
-            context = self.system_prompt.format(
-                client_data=json.dumps(client_data, indent=2, ensure_ascii=False) if client_data else "No hay datos del cliente"
-            )
+            # Obtener contexto completo
+            context_data = self._get_client_context(numero_cliente, numero_tarjeta)
+            context_data['conversation_history'] = self._get_conversation_history(session_id)
             
-            # Agregar historial de la conversación
-            context += f"\n\nHistorial de conversación:\n{self._get_conversation_history(session_id)}"
+            # Preparar el contexto completo con todas las variables necesarias
+            context = self.system_prompt.format(**context_data)
             
-            # Agregar mensaje actual
+            # Agregar el mensaje actual
             context += f"\nUsuario: {user_message}\nAsistente:"
 
             # Generar respuesta
