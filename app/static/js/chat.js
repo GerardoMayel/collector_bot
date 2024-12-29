@@ -152,6 +152,12 @@ async function sendAudioMessage(audioBlob) {
 
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
+    // Manejar submit del formulario
+    const chatForm = document.getElementById('chatForm');
+    if (chatForm) {
+        chatForm.addEventListener('submit', handleSubmit);
+    }
+
     // Evento para el botón de voz
     const voiceButton = document.getElementById('voiceInput');
     if (voiceButton) {
@@ -232,3 +238,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+

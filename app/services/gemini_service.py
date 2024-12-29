@@ -27,7 +27,7 @@ class GeminiService:
         4. Mantener un tono profesional y empático
 
         Si es audio:
-        5. Primero, SIEMPRE indica claramente lo que escuchaste en el audio
+        5. Primero, SIEMPRE indica claramente lo que escuchaste en el audio parafraseado un resumen de lo entenido antes de dar la respuesta
         6. Si no puedes entender el audio o hay problemas, indícalo directamente
         7. Si entendiste el audio, proporciona una respuesta concisa y relevante
         8. NO emules una conversación completa
