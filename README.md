@@ -180,6 +180,7 @@ flowchart TB
 │   │   └── js/
 │   └── templates/
 │       ├── base.html
+│       ├── errors/
 │       └── index.html
 ├── data/
 │   └── cobranza.db
@@ -191,7 +192,7 @@ flowchart TB
 ├── tests/
 └── wsgi.py
 
-19 directories, 24 files
+20 directories, 24 files
 ```
 
 ## 🚀 Instalación
@@ -228,6 +229,20 @@ async def process_interaction(input_data):
     # Generar respuesta
     response = await dialogue_manager.process_input(input_data, ml_insights)
     return response
+```
+
+## 👨‍💻 Deploy
+
+```bash
+local:
+ python wsgi.py
+
+heroku:
+git push heroku heroku-dev:main
+alta:
+heroku ps:scale web=1 -a voicebot-cobranza-mc-dev
+baja:
+heroku ps:scale web=0 -a voicebot-cobranza-mc-dev
 ```
 
 ## 🔍 Metodología

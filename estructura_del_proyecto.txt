@@ -31,6 +31,7 @@
 │   │   └── js/
 │   └── templates/
 │       ├── base.html
+│       ├── errors/
 │       └── index.html
 ├── data/
 │   └── cobranza.db
@@ -42,4 +43,4 @@
 ├── tests/
 └── wsgi.py
 
-19 directories, 24 files
+20 directories, 24 files
