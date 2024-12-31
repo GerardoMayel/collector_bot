@@ -238,7 +238,7 @@ local:
  python wsgi.py
 
 heroku:
-git push heroku heroku-dev:main
+git push heroku main
 alta:
 heroku ps:scale web=1 -a voicebot-cobranza-mc-dev
 baja:
