@@ -5,19 +5,53 @@ let mediaRecorder;
 let audioChunks = [];
 let isRecording = false;
 
-// Función para agregar mensajes al chat
-function addMessage(text, isUser = false) {
+// Función para simular escritura caracter por caracter
+async function typeMessage(element, text, speed = 30) {
+    let index = 0;
+    element.textContent = '';
+    
+    return new Promise(resolve => {
+        function addChar() {
+            if (index < text.length) {
+                element.textContent += text.charAt(index);
+                index++;
+                setTimeout(addChar, speed);
+            } else {
+                resolve();
+            }
+        }
+        addChar();
+    });
+}
+
+// Función modificada para agregar mensajes al chat con efecto de escritura
+async function addMessage(text, isUser = false) {
     const chatMessages = document.getElementById('chatMessages');
     const messageDiv = document.createElement('div');
     messageDiv.className = `flex items-start space-x-2 ${isUser ? 'justify-end' : ''}`;
+    
+    // Crear la estructura del mensaje
     const content = `
         ${!isUser ? '<div class="flex-shrink-0"><i class="fas fa-robot text-blue-600 text-xl"></i></div>' : ''}
         <div class="${isUser ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-800'} rounded-lg p-3 max-w-[70%]">
-            <p>${text}</p>
+            <p class="message-content"></p>
         </div>
     `;
+    
     messageDiv.innerHTML = content;
     chatMessages.appendChild(messageDiv);
+    
+    // Obtener el elemento donde se mostrará el texto
+    const messageContent = messageDiv.querySelector('.message-content');
+    
+    // Si es un mensaje del usuario, mostrarlo inmediatamente
+    if (isUser) {
+        messageContent.textContent = text;
+    } else {
+        // Si es un mensaje del bot, usar el efecto de escritura
+        await typeMessage(messageContent, text);
+    }
+    
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
@@ -50,12 +84,12 @@ async function handleSubmit(event) {
         
         const data = await response.json();
         if (response.ok) {
-            addMessage(data.response);
+            await addMessage(data.response);
         } else {
-            addMessage('Lo siento, hubo un error al procesar tu mensaje.');
+            await addMessage('Lo siento, hubo un error al procesar tu mensaje.');
         }
     } catch (error) {
-        addMessage('Error de conexión. Por favor, intenta de nuevo.');
+        await addMessage('Error de conexión. Por favor, intenta de nuevo.');
         console.error('Error:', error);
     } finally {
         // Habilitar input después del proceso
