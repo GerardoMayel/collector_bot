@@ -95,6 +95,42 @@ def init_db(app):
                     CAT=65.2,
                     ESTATUS_CUENTA='MORA',
                     ULTIMA_FECHA_PAGO=datetime.now().date() - timedelta(days=45)
+                ),
+                ClienteCuenta(
+                    NUMERO_CLIENTE='11110000',
+                    NOMBRE_CLIENTE='FERNANDO VALDIVIA',
+                    NUMERO_TARJETA='5587123456789012',  # Formato Mastercard
+                    TIPO_TARJETA='MASTERCARD WORLD ELITE',
+                    LINEA_CREDITO=350000.00,
+                    SALDO_ACTUAL=85000.00,
+                    SALDO_VENCIDO=8500.00,
+                    FECHA_CORTE=datetime.now().date() - timedelta(days=2),
+                    FECHA_LIMITE_PAGO=datetime.now().date() + timedelta(days=13),
+                    PAGOS_VENCIDOS=1,
+                    PAGO_MINIMO=4250.00,
+                    PAGO_PARA_NO_INTERESES=85000.00,
+                    TASA_INTERES_ANUAL=40.99,
+                    CAT=65.2,
+                    ESTATUS_CUENTA='MORA',
+                    ULTIMA_FECHA_PAGO=datetime.now().date() - timedelta(days=45)
+                ),
+                ClienteCuenta(
+                    NUMERO_CLIENTE='11110000',
+                    NOMBRE_CLIENTE='FERNANDO VALDIVIA',
+                    NUMERO_TARJETA='5587123456789012',  # Formato Mastercard
+                    TIPO_TARJETA='VISA 2NOW',
+                    LINEA_CREDITO=90000.00,
+                    SALDO_ACTUAL=85000.00,
+                    SALDO_VENCIDO=8500.00,
+                    FECHA_CORTE=datetime.now().date() - timedelta(days=2),
+                    FECHA_LIMITE_PAGO=datetime.now().date() + timedelta(days=13),
+                    PAGOS_VENCIDOS=1,
+                    PAGO_MINIMO=4250.00,
+                    PAGO_PARA_NO_INTERESES=85000.00,
+                    TASA_INTERES_ANUAL=40.99,
+                    CAT=65.2,
+                    ESTATUS_CUENTA='MORA',
+                    ULTIMA_FECHA_PAGO=datetime.now().date() - timedelta(days=45)
                 )
             ]
             
