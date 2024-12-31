@@ -117,7 +117,7 @@ def init_db(app):
                 ClienteCuenta(
                     NUMERO_CLIENTE='11110000',
                     NOMBRE_CLIENTE='FERNANDO VALDIVIA',
-                    NUMERO_TARJETA='5587123456789012',  # Formato Mastercard
+                    NUMERO_TARJETA='4024123456781000',  # Formato Mastercard
                     TIPO_TARJETA='VISA 2NOW',
                     LINEA_CREDITO=90000.00,
                     SALDO_ACTUAL=85000.00,
